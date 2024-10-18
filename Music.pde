@@ -1,11 +1,13 @@
 import beads.*;
-
+import java.util.ArrayList;
+import java.util.List;
 
 class Music {
   AudioContext ac;
   
 
   int index = 0; 
+  int musicIndex = 0; 
   public boolean isPlaying; 
 
   Music(){
@@ -13,11 +15,25 @@ class Music {
     ac.start();
   }
   
+  // change to list of lyrics
+  void play(List<String> lyrics){
+    
+    if(!isPlaying){
+      if(musicIndex < lyrics.size()){
+        playString(lyrics.get(musicIndex));
+        musicIndex++;
+      }
+      else {
+        //println("Song Played");
+      }
+    }
+  }
+  
   void playString(String str){
     println(str);
     isPlaying = true; 
     index = 0;
-    Clock clock = new Clock(ac, 1000);
+    Clock clock = new Clock(ac, 500);
     clock.addMessageListener(
     //create listener method
       new Bead() {

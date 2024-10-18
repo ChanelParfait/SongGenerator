@@ -4,7 +4,7 @@ import java.util.List;
 class Text {
   
   String textString = "";
-  List<String> inputStrings = new ArrayList<>();
+  List<Character> inputStrings = new ArrayList<>();
   List<Integer> inputTimes = new ArrayList<>();
   
   Text(){}
@@ -13,7 +13,7 @@ class Text {
     return textString;
   }
   
-  public List<String> getInputStrings(){
+  public List<Character> getInputStrings(){
     return inputStrings;
   }
   
@@ -62,10 +62,10 @@ class Text {
         return; 
       } 
       // convert key to a string
-      String str = "";
-      str += key;
+      //String str = "";
+      //str += key;
       // add key to input strings
-      inputStrings.add(str);
+      inputStrings.add(key);
       // add current time to input times
       inputTimes.add(millis());
       UpdateString();

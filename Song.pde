@@ -7,6 +7,7 @@ class Song{
 
     String[] lyricStrings = new String[30];
     lyricStrings = text.split("[,\\.]");
+    println("Lyric strings: " + lyricStrings.length);
 
     lyrics = new Lyric[lyricStrings.length];
 

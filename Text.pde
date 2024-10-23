@@ -9,6 +9,18 @@ class Text {
   
   Text(){}
   
+  // returns typing speed in characters per second
+  float getTypingSpeed(){
+    // get the total typing time
+    float typingTime = inputTimes.get(inputTimes.size() - 1) - inputTimes.get(0);
+    typingTime /= 1000; 
+    float speed =  (inputStrings.size() - 1) / typingTime; 
+    println("typing time: " + typingTime);
+    println("Speed: " + speed); 
+    return 0; 
+  
+  }
+  
   public String getString(){
     return textString;
   }

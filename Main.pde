@@ -35,7 +35,7 @@ void draw(){
     music.play(); 
     if(music.getActiveLyric() != null){
       fill(0,0,0);
-      println(music.getActiveLyric());
+      //println(music.getActiveLyric());
       textAlign(CENTER, CENTER);
       textSize(100); 
       text(music.getActiveLyric(), 0, 0, width, height);
@@ -69,8 +69,9 @@ public void submit(int value) {
   if(frameCount > 0){
       isSubmitted = true; 
       song = new Song(txt.getString());
-      music = new Music(song.getLyrics());
+      music = new Music(song.getLyrics(), 0);
       music.startMusic();
+      txt.getTypingSpeed(); 
       bgColour = generateRandomColor();
       cp5.getController("submit")
       .setLabel("Replay");

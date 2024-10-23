@@ -6,16 +6,18 @@ class Music {
   AudioContext ac;
   Clock bgClock;
   Lyric[] songLyrics;
+  
+  float songSpeed; 
 
   int index = 0; 
   int musicIndex = 0; 
   public boolean isPlaying; 
 
-  Music(Lyric[] lyrics){
+  Music(Lyric[] lyrics, float speed){
     ac = AudioContext.getDefaultContext();
     ac.start();
     songLyrics = lyrics;
-
+    songSpeed = speed; 
 
   }
   
@@ -54,7 +56,7 @@ class Music {
   
  
   void playLyric(Lyric lyric){
-    println(lyric);
+    //println(lyric);
     
     isPlaying = true; 
     index = 0;
@@ -70,7 +72,7 @@ class Music {
             if(index < lyric.getLength()){
               //play a sound for each word
               String word = lyric.getWordAt(index); 
-              println("Word: " + word);
+              //println("Word: " + word);
 
               // find sound pitch and duration based on word
               float duration = 0;

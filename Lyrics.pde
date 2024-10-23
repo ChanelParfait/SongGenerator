@@ -7,14 +7,14 @@ class Lyric{
   String lyricText;
   
   Lyric(String text){
-      println("Lyric: " + text);
+      //println("Lyric: " + text);
       lyricText = text;
       String trimmed = text.trim();
       lyric = trimmed.split("[,\\.\\s]");
       
       for(String word : lyric){
         
-        println("W: " + word);
+        //println("W: " + word);
       }
       
   } 

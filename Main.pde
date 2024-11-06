@@ -84,6 +84,7 @@ void setupUI(){
        .setBarHeight(30)
        .setItemHeight(30)
        .addItems(scales)
+       .setValue(0)
        .close()
        ;
          
@@ -155,6 +156,7 @@ public void restart(int value) {
   // don't run on start
   if(frameCount > 0){
       isSubmitted = false; 
+      bgColour = color(0,0,0);
       // check if string is valid
       song = null;
       txt = new Text();
@@ -162,7 +164,7 @@ public void restart(int value) {
       music = null;
   
       cp5.getController("submit").setLabel("Submit");
-      cp5.getController("restart").show();
+      cp5.getController("restart").hide();
       
       cp5.getController("scale").show();
       cp5.getController("pitch").show();

@@ -10,14 +10,17 @@ class Text {
   Text(){}
   
   // returns typing speed in characters per second
-  float getTypingSpeed(){
+  public float getTypingSpeed(){
+    float speed = 0;
     // get the total typing time
-    float typingTime = inputTimes.get(inputTimes.size() - 1) - inputTimes.get(0);
-    typingTime /= 1000; 
-    float speed =  (inputStrings.size() - 1) / typingTime; 
-    println("typing time: " + typingTime);
-    println("Speed: " + speed); 
-    return 0; 
+    if(inputTimes.size() > 0){
+      float typingTime = inputTimes.get(inputTimes.size() - 1) - inputTimes.get(0);
+      typingTime /= 1000; 
+      speed =  (inputStrings.size() - 1) / typingTime; 
+      //println("typing time: " + typingTime);
+      println("Speed: " + speed); 
+    }
+    return speed; 
   
   }
   
@@ -32,6 +35,7 @@ class Text {
   public List<Integer> getInputTimes(){
     return inputTimes;
   }
+  
   
   private void UpdateString(){
    // empty string 

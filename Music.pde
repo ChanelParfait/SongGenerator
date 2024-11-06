@@ -6,20 +6,51 @@ class Music {
   AudioContext ac;
   Clock bgClock;
   Lyric[] songLyrics;
-  
+  float pitch; 
+  int[] pitchMode;
+  int pitchMax= 4; 
+  float randomiser;
   float songSpeed; 
 
   int index = 0; 
   int musicIndex = 0; 
   public boolean isPlaying; 
 
-  Music(Lyric[] lyrics, float speed){
+  Music(Lyric[] lyrics, float speed, int pitch, String scale, float rand){
     ac = AudioContext.getDefaultContext();
     ac.start();
     songLyrics = lyrics;
     songSpeed = speed; 
-
+    pitchMax = pitch;
+    setScale(scale);
+    randomiser = rand; 
   }
+  void stopMusic(){
+    bgClock.kill();
+    ac.stop();
+  }
+  
+  void setScale(String scale){
+    switch (scale) {
+        case "Major":
+            pitchMode = Pitch.major;
+            break;
+        case "Minor":
+            pitchMode = Pitch.minor;
+            break;
+        case "Dorian":
+            pitchMode = Pitch.dorian;
+            break;
+        case "Pentatonic":
+            pitchMode = Pitch.pentatonic;
+            break;
+        default:
+            println("Invalid Pitch Mode");
+            pitchMode = Pitch.major;
+            break;
+    }
+  }
+  
   
   String getActiveLyric(){
     if(musicIndex < songLyrics.length){
@@ -55,12 +86,11 @@ class Music {
   }
   
  
-  void playLyric(Lyric lyric){
-    //println(lyric);
-    
+  void playLyric(Lyric lyric){    
     isPlaying = true; 
     index = 0;
-    Clock clock = new Clock(ac, 1000);
+    // set pace of song
+    Clock clock = new Clock(ac, 2000 / songSpeed);
     clock.addMessageListener(
     //create listener method
       new Bead() {
@@ -80,11 +110,11 @@ class Music {
               for (int i = 0; i < word.length(); i++){
                 
                 avgKey += word.charAt(i); 
-                duration += 30; 
+                duration += 50; 
               }
               // get average keycode of all letters in the word
               avgKey /= word.length();
-              float freqMod = map(avgKey, 97, 122, 1, 12);
+              float freqMod = map(avgKey, 97, 122, 1, pitchMax);
               
               // min pitch of 400, max of 800
               //float pitch = 400 + (100 * freqMod);
@@ -104,12 +134,12 @@ class Music {
   
   void playBGMusic(){
     // use different values to affect bg music
-    bgClock = new Clock(ac, 1000);
+    bgClock = new Clock(ac, 2000 / songSpeed);
 
     bgClock.addMessageListener(
     //create listener method
       new Bead() {
-        //this is the method that we override to make the Bead do something
+        int pitch = Pitch.forceToScale((int)random(pitchMax), pitchMode);
         public void messageReceived(Bead message) {
           Clock c = (Clock)message;
           if(c.getCount() % 8 == 0) {
@@ -120,9 +150,42 @@ class Music {
             Gain g = new Gain(1, gainEnv);
             g.addInput(n);
             Panner p = new Panner(random(0.5, 1));
-            //p.addInput(g);
+            p.addInput(g);
             ac.out.addInput(g);
             gainEnv.addSegment(0, 60, new KillTrigger(p));
+              
+          }
+          if(c.getCount() % 4 == 0) {
+            if(randomiser > 3){
+              int pitchAlt = pitch;
+              if(random(1) < 0.2) 
+              pitchAlt = Pitch.forceToScale((int)random(pitch), pitchMode) + (int)random(2) * 12;
+              float freq = Pitch.mtof(pitchAlt + 32);
+              WavePlayer wp = new WavePlayer(freq, Buffer.SQUARE);
+              Envelope gainEnv = new Envelope(0); 
+  
+              Gain g = new Gain(1, gainEnv);
+              g.addInput(wp);
+              Panner p = new Panner(random(1));
+              p.addInput(g);
+              ac.out.addInput(p);
+              gainEnv.addSegment(random(0.1), random(50));
+              gainEnv.addSegment(0, random(400), new KillTrigger(p));
+            }
+            else{
+              int pitchAlt = pitch;
+              if(random(1) < 0.2) 
+              pitchAlt = Pitch.forceToScale((int)random(pitch), pitchMode) + (int)random(7) * 12;
+              float freq = Pitch.mtof(pitchAlt + 32);
+              WavePlayer wp = new WavePlayer(freq, Buffer.SINE);
+              Envelope gainEnv = new Envelope(0); 
+              Gain g = new Gain(1, gainEnv);
+              g.addInput(wp);
+              ac.out.addInput(g);
+              gainEnv.addSegment(random(0.5), random(50));
+              gainEnv.addSegment(0, random(800), new KillTrigger(g));
+            }
+            
               
           }
           
@@ -144,9 +207,9 @@ class Music {
     
     Envelope gainEnv = new Envelope(0.1); 
     // scale pitch value to make a more consistent sound
-    pitch = Pitch.forceToScale((int)pitch, Pitch.dorian);
-    float freq = Pitch.mtof(pitch + (int)random(2,4) * 12 + 32);
-    println("Pitch: " + freq);
+    pitch = Pitch.forceToScale((int)pitch, pitchMode);
+    float freq = Pitch.mtof(pitch + 3 * 12 + 32);
+    println("Pitch: " + pitch);
 
     WavePlayer wp = new WavePlayer(freq, Buffer.SINE);
     Gain g = new Gain(1, gainEnv);
